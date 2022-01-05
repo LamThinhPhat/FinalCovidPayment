@@ -1,6 +1,7 @@
 package SSLServer;
 
 import PaymentFrame.PaymentFrame;
+import table.payment_history;
 import table.payment_user;
 
 import javax.swing.*;
@@ -8,7 +9,10 @@ import java.awt.*;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
+
+import static PaymentFrame.PaymentFrame.def;
 
 public class Server {
     static PaymentFrame frame;
@@ -131,6 +135,16 @@ public class Server {
                                 user.setBalance(user.getBalance() - balancepay);
                                 getDB.PaymentUser.FunctionPaymentUser.UpdateDebtBalance(user);
                                 getDB.PaymentHistory.FunctionPaymentHistory.UpdatePaymentHistory(user.getUsername(), balancepay, user.getBalance());
+
+                                ArrayList<payment_history> ListHistory = getDB.PaymentHistory.FunctionPaymentHistory.GetAllHistory();
+                                def.setRowCount(0);
+                                for(payment_history i : ListHistory)
+                                {
+                                    def.addRow(new Object[] {
+                                            i.getUsername(), i.getDate_create(), i.getDebt_pay(), i.getNew_balance()
+                                    });
+                                }
+
                                 for (String name: printWriters.keySet()) {
                                     if (name.equals(this.threadName))
                                         printWriters.get(name).println("{success}");

@@ -15,6 +15,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class PaymentFrame extends JFrame {
+    static public DefaultTableModel def = new DefaultTableModel() {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+    };
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -30,13 +36,13 @@ public class PaymentFrame extends JFrame {
     public PaymentFrame()
     {
         setTitle("Manager - Covid Management System");
-        ImageIcon covid_icon=null;
-        try {
-            covid_icon=new ImageIcon(ImageIO.read(new File("rsc/covid_icon.png")));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        setIconImage(covid_icon.getImage());
+//        ImageIcon covid_icon=null;
+//        try {
+//            covid_icon=new ImageIcon(ImageIO.read(new File("rsc/covid_icon.png")));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        setIconImage(covid_icon.getImage());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1024, 720);
         setResizable(false);
@@ -83,12 +89,6 @@ public class PaymentFrame extends JFrame {
 
         JTable PaymentHistoryTable = new JTable();
         PaymentHistoryTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        DefaultTableModel def = new DefaultTableModel() {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
 
         PaymentHistoryTable.setModel(def);
         def.addColumn("Username");
