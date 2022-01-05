@@ -1,6 +1,7 @@
 package SSLServer;
 
 import PaymentFrame.PaymentFrame;
+import table.payment_user;
 
 import javax.swing.*;
 import java.awt.*;
@@ -52,7 +53,6 @@ public class Server {
                 String threadName = "Client-" + (clients.size() + 1);
                 clients.put(threadName, client);
                 int clientNum=clients.size()+1;
-                JOptionPane.showMessageDialog(frame,clientNum+" has joined");
                 ThreadSendMessage threadSendMessage = new ThreadSendMessage(threadName, client);
                 threadSendMessage.start();
 
@@ -112,29 +112,29 @@ public class Server {
                 isInitOutputStream = true;
 
                 String username = bufferedReader.readLine();
+
                 if (username != null) {
                     this.username = username;
-                    for (String name: printWriters.keySet()) {
-                        if (!name.equals(this.threadName))
-                            printWriters.get(name).println(username + " has joined");
-                    }
+                    payment_user user=getDB.PaymentUser.FunctionPaymentUser.GetPaymentAccount(username);
+                    JOptionPane.showMessageDialog(frame,username+" has connected");
 
                     while (true) {
                         String messageFromClient = bufferedReader.readLine();
 
                         if (messageFromClient != null) {
                             if (messageFromClient.trim().equalsIgnoreCase("{quit}")) {
-                                final String answerMessage = this.username + " has left";
-                                for (String name : printWriters.keySet()) {
-                                    if (!name.equals(this.threadName))
-                                        printWriters.get(name).println(answerMessage);
-                                }
-
                                 break;
                             } else {
-                                final String answerMessage = this.username + ": " + messageFromClient;
-                                for (String name : printWriters.keySet())
-                                    printWriters.get(name).println(answerMessage);
+                                int balancepay = Integer.parseInt( messageFromClient);
+                                System.out.println(balancepay);
+                                user.setDebt(user.getDebt() - balancepay);
+                                user.setBalance(user.getBalance() - balancepay);
+                                getDB.PaymentUser.FunctionPaymentUser.UpdateDebtBalance(user);
+                                getDB.PaymentHistory.FunctionPaymentHistory.UpdatePaymentHistory(user.getUsername(), balancepay, user.getBalance());
+                                for (String name: printWriters.keySet()) {
+                                    if (name.equals(this.threadName))
+                                        printWriters.get(name).println("{success}");
+                                }
                             }
                         }
                     }
