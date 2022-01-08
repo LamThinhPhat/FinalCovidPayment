@@ -182,8 +182,7 @@ public class PaymentFrame extends JFrame {
                             i.getUsername(), i.getDate_create(), i.getDebt_pay(), i.getNew_balance()
                     });
                 }
-                SearchUserNameField.setText("Username");
-                SearchUserNameField.setForeground(Color.GRAY);
+                SearchUserNameField.setText("");
             }
         });
 
